@@ -4,10 +4,10 @@ include 'compute.php';
 $function = $_POST['function'];
 
 if ($function == "loginUser") {
-    $names = $_POST["names"];
+    $email = $_POST["email"];
     $password = $_POST["password"];
 
-    $sql = "SELECT * FROM `users` WHERE `names`='$names' AND `password`='$password'";
+    $sql = "SELECT * FROM `users` WHERE `email`='$email' AND `password`='$password'";
     compute::instance()->fetch($sql,false);
 
 }
@@ -18,7 +18,7 @@ if ($function == "addUser") {
     $phoneNumber = $_POST["phoneNumber"];
     $password = $_POST["password"];
 
-    $sql = "INSERT INTO flockr.users(`names`, `email`, `phoneNumber`, `password`) 
+    $sql = "INSERT INTO bursary.users(`names`, `email`, `phoneNumber`, `password`) 
                               VALUES ('$names','$email','$phoneNumber','$password')";
 
     compute::instance()->execute($sql);
