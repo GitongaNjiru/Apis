@@ -2,6 +2,10 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+ini_set('max_execution_time', 30); // Set max execution time to 30 seconds
+ini_set('mysql.connect_timeout', 10); // DB connection timeout
+ini_set('default_socket_timeout', 10);
+
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
@@ -56,33 +60,29 @@ switch ($function) {
         break;
 
     case 'LoginUser':
-        // Extract login data
         $email = isset($postData["email"]) ? $postData["email"] : '';
         $password = isset($postData["password"]) ? $postData["password"] : '';
 
-        // Log login attempt
-        error_log("Login attempt - Email: $email");
-
-        // Query to check user credentials
-        $sql = "SELECT * FROM bursary.users WHERE email='$email' AND password='$password'";
+        $sql = "SELECT id, names, email FROM bursary.users WHERE email='$email' AND password='$password'";
         $result = compute::instance()->fetch($sql, false, true);
 
         if ($result) {
-            // User found with matching credentials
             echo json_encode([
                 "success" => true,
                 "message" => "Login successful",
-                "user" => $result
+                "user" => [
+                    "id" => $result["id"],
+                    "names" => $result["names"], // ✅ Ensure correct field
+                    "email" => $result["email"]
+                ]
             ]);
         } else {
-            // No matching user found
             echo json_encode([
                 "success" => false,
                 "message" => "Invalid email or password"
             ]);
         }
         break;
-
     case 'getUsers':
         // Fetch users from the database
         $sql = "SELECT * FROM `users`";
